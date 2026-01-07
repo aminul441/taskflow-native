@@ -1,20 +1,44 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { View, Text, FlatList } from "react-native";
+import { TaskProvider, TaskContext } from "./context/TaskContext";
+import TaskInput from "./components/TaskInput";
+import TaskItem from "./components/TaskItem";
+import { useContext } from "react";
 
-export default function App() {
+function Main() {
+  const { tasks, toggleTask, deleteTask } =
+    useContext(TaskContext);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+    <View style={{ padding: 20, marginTop: 40 }}>
+      <Text style={{ fontSize: 28, fontWeight: "bold" }}>
+        TaskFlow
+      </Text>
+
+      <Text style={{ color: "gray", marginBottom: 20 }}>
+        Task + Priority + Edit + Storage
+      </Text>
+
+      <TaskInput />
+
+      <FlatList
+        data={tasks}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TaskItem
+            task={item}
+            onToggle={toggleTask}
+            onDelete={deleteTask}
+          />
+        )}
+      />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  return (
+    <TaskProvider>
+      <Main />
+    </TaskProvider>
+  );
+}
